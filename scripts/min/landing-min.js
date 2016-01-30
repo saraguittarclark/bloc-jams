@@ -1,0 +1,1 @@
+var animatePoints=function(){function t(){for(var t=0;t<a.length;t++)a[t].style.opacity=1,a[t].style.transform="scaleX(1) translateY(0)",a[t].style.msTransform="scaleX(1) translateY(0)",a[t].style.WebkitTransform="scaleX(1) translateY(0)"}var a=document.getElementsByClassName("point");t()};
