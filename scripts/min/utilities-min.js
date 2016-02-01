@@ -1,0 +1,1 @@
+var forEach=function(r,a){for(var f=0;f<r.length;f++)a(r[f])};
