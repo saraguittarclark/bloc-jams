@@ -1,6 +1,10 @@
-var pointsArray = document.getElementsByClassName('point');
+var pointsArray = document.getElementsByClassName('point'); // "live" Node list not array
+// document.querySelectorAll(".point"); // "not live" node list
 
 var revealPoints = function(point) {
+    // summary:
+    //      Revels a point by setting its opacity to 1.
+    // point: An element with a class of "point"
     point.style.opacity = 1;
     point.style.transform = "scaleX(1) translateY(0)";
     point.style.msTransform = "scaleX(1) translateY(0)";
