@@ -59,10 +59,10 @@ var albumCalle13 = {
 var createSongRow = function(songNumber, songName, songLength) {
 	var template = 
 	'<tr class="album-view-song-item">'
-+'		<td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
-+'		<td class="song-item-title">' + songName + '</td>'
-+'		<td class="song-item-duration">' + songLength + '</td>'
-+'	</tr>'
++'<td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
++'<td class="song-item-title">' + songName + '</td>'
++'<td class="song-item-duration">' + songLength + '</td>'
++'</tr>'
 	;
 	return template;
 };
@@ -86,6 +86,43 @@ var setCurrentAlbum = function(album) {
 	}
 };
 
+
+var findParentByClassName = function(element, targetClass) {
+	var currentParent = element.parentElement;
+	while (currentParent.className != targetClass) {
+		currentParent = currentParent.parentElement;
+	}
+	return currentParent;
+};
+//consistently is returning undefined/errors - can't read property className of undefined
+
+var getSongItem = function(element) {
+
+	//ALWAYS return song-item-number class 
+	//parent find a child - query down the DOM 
+	//sibling find a sibling - query up then across the DOM
+	//child find parent - query UP! findParentByClassName
+	switch(element.className) {
+		case "album-song-button":
+		case "ion-play":
+		case "ion-pause":
+			return findParentByClassName(element, "song-item-number");
+			break;
+		case "album-view-song-item":
+			return element.querySelector(".song-item-number");
+			break;
+		case "song-item-duration":
+		case "song-item-title":
+			return findParentByClassName(element, "album-view-song-item").querySelector(".song-item-number");
+			break; 
+		case "song-item-number":
+			return element;
+		default: 
+			return;
+	}  
+}
+
+
 var albumImage = document.getElementsByClassName('album-cover-art')[0];
 var albumArray = [albumPicasso, albumMarconi, albumCalle13];
 var albumIndex = 1; //index of currently displayed album
@@ -93,6 +130,7 @@ var albumIndex = 1; //index of currently displayed album
 var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
 var songRows = document.getElementsByClassName('album-view-song-item');
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
+
 
 window.onload = function() {
 	setCurrentAlbum(albumArray[albumIndex]);
@@ -102,7 +140,6 @@ window.onload = function() {
 	if (albumIndex >= albumArray.length) {
 		albumIndex = 0;
 	} 
-	// console.log(albumIndex);
 	setCurrentAlbum(albumArray[albumIndex]);
 	});
 
@@ -112,13 +149,16 @@ window.onload = function() {
 		}
 	});
 
-	for (var i = 0; i < songRows.length; i++) {
-		songRows[i].addEventListener('mouseleave', function(event) {
-			this.children[0].innerHTML = this.children[0].getAttribute('data-song-number');
-		});
-	}
+	songListContainer.addEventListener('mouseout', function(event) {
+		if (event.target.parentElement.className === 'album-view-song-item') {
+			var songItemNumber = event.target.parentElement.querySelector('.song-item-number');
+			songItemNumber.innerHTML = songItemNumber.getAttribute('data-song-number');
+		}
+	});
 
 };
+
+
 
 
 
