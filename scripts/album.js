@@ -85,15 +85,23 @@ var setCurrentAlbum = function(album) {
 	}
 };
 
-
 var findParentByClassName = function(element, targetClass) {
 	var currentParent = element.parentElement;
-	while (currentParent.className != targetClass) {
-		currentParent = currentParent.parentElement;
+	if (currentParent) {
+		while (currentParent && currentParent.className != targetClass) {
+			currentParent = currentParent.parentElement;
+		}
+		if (currentParent.className == targetClass) { 
+			return currentParent;
+		} else {
+			console.log("No parent with that class name found");
+		}	
 	}
 	return currentParent;
+	} else {
+		console.log("No parent found!");
+	} 
 };
-//consistently is returning undefined/errors - can't read property className of undefined
 
 var getSongItem = function(element) {
 	//ALWAYS return song-item-number class 
@@ -170,8 +178,6 @@ window.onload = function() {
 
 	songListContainer.addEventListener('mouseout', function(event) {
 		if (event.target.parentElement.className === 'album-view-song-item') {
-			// var songItemNumber = event.target.parentElement.querySelector('.song-item-number');
-			// songItemNumber.innerHTML = songItemNumber.getAttribute('data-song-number');
 			var songItem = getSongItem(event.target);
 			var songItemNumber = songItem.getAttribute('data-song-number');
 
