@@ -127,11 +127,11 @@ $(document).ready(function() {
 		}
 		if (currentlyPlayingSong !== $songNumber) {
 			// Switch from Play -> Pause button to indicate new song is playing
-			$(this).html(pauseButtonTemplate);
+			$songItemNumber.html(pauseButtonTemplate);
 			currentlyPlayingSong = $songNumber;
 		} else if (currentlyPlayingSong === $songNumber) {
 			// Switch from Pause -> Play button to pause currently playing song
-			$(this).html(playButtonTemplate);
+			$songItemNumber.html(playButtonTemplate);
 			currentlyPlayingSong = null;
 		}
 	};
@@ -152,10 +152,10 @@ $(document).ready(function() {
 		}
 	};
 
-	var $songListContainer = $(songListContainer);
-	$songListContainer.on("mouseenter", ".album-view-song-list", onHover());
-	$songListContainer.on("mouseleave", ".album-view-song-list", offHover());
-	$songListContainer.on('click', ".album-view-song-list", clickHandler());
+	var $songListContainer = $('.album-view-song-list');
+	$songListContainer.on("mouseenter", ".album-view-song-item", onHover);
+	$songListContainer.on("mouseleave", ".album-view-song-item", offHover);
+	$songListContainer.on('click', ".album-view-song-item", clickHandler);
 });
 
 
