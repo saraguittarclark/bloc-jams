@@ -11,10 +11,6 @@ var createSongRow = function(songNumber, songName, songLength) {
 	return $(template);
 	var $row = $(template);
 
-	// $row.find('.song-item-number').click(clickHandler);
-	// $row.hover(onHover, offHover);
-
-	// return $row;
 };	
 
 var setCurrentAlbum = function(album) {
@@ -40,8 +36,6 @@ var setCurrentAlbum = function(album) {
 
 var updatePlayerBarSong = function() {
 	var currentSong = currentAlbum.songs[currentlyPlayingSongNumber - 1];
-	//removed - 1 from currentlyPlayingSongNumber - doesn't change the console.log in the next/previous songs()
-	//when currentSong is undefined w/o name
 	if (currentSong !== undefined) {
 		$('.artist-name').text(currentAlbum.artist);
 		$('.song-name').text(currentSong.name);
@@ -56,10 +50,6 @@ var updatePlayerBarSong = function() {
 var trackIndex = function(album, song) {
 	return album.songs.indexOf(song);
 }
-
-//next starts at beginning of album, not NEXT song, then on repeat starts at [1] vs. [0]
-//if choose a song manually the next goes back to the next song it was supposed to be/not updating
-//check the array position BEFORE rest of code?
 
 var nextSong = function() {
 	// if next song  is forward do x or y
@@ -106,9 +96,6 @@ var previousSong = function() {
 	updatePlayerBarSong();
 }
 
-//ASSIGNMENT EGADS THIS CHECKPOINT IS SO LONG I HATES IT
-//PLAY BUTTON STILL DOESN'T WORK
-//takes in just a song number?? what?
 var setSong = function(songNumber) {
 	currentlyPlayingSongNumber = songNumber;
 	currentSongFromAlbum = currentAlbum.songs[currentlyPlayingSongNumber - 1];
@@ -205,7 +192,6 @@ $(document).ready(function() {
 
 
 //clickHandler fails to fire on third sequential click of play button in song row
-//songCell assignment thing
 //squish together previous/next if time
 
 
