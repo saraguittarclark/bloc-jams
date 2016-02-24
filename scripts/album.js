@@ -62,38 +62,23 @@ var trackIndex = function(album, song) {
 //check the array position BEFORE rest of code?
 
 var nextSong = function() {
-	//find last current song
-    // var getLastSongNumber = function(index) {
-    //     return index == 0 ? currentAlbum.songs.length : index;
-    // };
-    
+	// if next song  is forward do x or y
     var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
-  	var nextSongIndex = trackIndex(currentAlbum, currentSongFromAlbum) + 1;
-	
-	//define nextsong index
-	var nextSong = currentAlbum.songs[nextSongIndex];
-
-	if (currentSongIndex >= currentAlbum.songs.length) {
-		nextSong = currentAlbum.songs[0];
-	} 
-    
-	//new current song is next song
-	currentSongFromAlbum = nextSong;
-
+  	currentSongIndex++;
+  	if (currentSongIndex >= currentAlbum.songs.length) {
+  		currentSongIndex = 0;
+  	} 
+  
 	//current song change button back to hover functionality/number 
 	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$currentlyPlayingSongElement.html(currentlyPlayingSongNumber);
 
 	//change button play to pause currentSongFromAlbum
 	//find song number
-	currentlyPlayingSongNumber = nextSongIndex + 1; //because index != song number
+	setSong(currentSongIndex + 1); //because index 0 based and songnumber 1 based 
 
 	var $nextSongIndexCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$nextSongIndexCell.html(pauseButtonTemplate);
-
-	// var lastSongNumber = getLastSongNumber(currentSongIndex);
-	// var $lastSongNumberCell = $('.song-item-number[data-song-number="' + lastSongNumber + '"]');
-	// $lastSongNumberCell.html(lastSongNumber);
 
 	updatePlayerBarSong();
 }
@@ -101,28 +86,36 @@ var nextSong = function() {
 var previousSong = function() {
 	//find index current song and previous
 	var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
-	var previousSongIndex = trackIndex(currentAlbum, currentSongFromAlbum) - 1;
+	currentSongIndex--;
+
+	if (currentSongIndex < 0) {
+		currentSongIndex = currentAlbum.songs.length - 1;
+	} 
 
 	//current song change button back to hover functionality/number 
 	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$currentlyPlayingSongElement.html(currentlyPlayingSongNumber);
 
-	if (previousSongIndex < 0) {
-		previousSongIndex = currentAlbum.songs.length - 1;
-	} 
-
-	var previousSong = currentAlbum.songs[previousSongIndex];
-	//new current song is next song
-	currentSongFromAlbum = previousSong;
-	
 	//change button play to pause currentSongFromAlbum
 	//find song number
-	currentlyPlayingSongNumber = previousSongIndex + 1; //because index != song number
+		setSong(currentSongIndex + 1);
 
 	var $previousSongNumberCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$previousSongNumberCell.html(pauseButtonTemplate);
 
 	updatePlayerBarSong();
+}
+
+//ASSIGNMENT EGADS THIS CHECKPOINT IS SO LONG I HATES IT
+//PLAY BUTTON STILL DOESN'T WORK
+//takes in just a song number?? what?
+var setSong = function(songNumber) {
+	currentlyPlayingSongNumber = songNumber;
+	currentSongFromAlbum = currentAlbum.songs[currentlyPlayingSongNumber - 1];
+}
+
+var getSongNumberCell = function(number) {
+	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 }
 
 var albumImage = document.getElementsByClassName('album-cover-art')[0];
@@ -137,6 +130,8 @@ var playerBarPlayButton = '<span class="ion-play"></span>';
 var playerBarPauseButton = '<span class="ion-pause"></span>'
 
 var currentAlbum = null;
+
+//set to null before used or if current song is paused
 var currentlyPlayingSongNumber = null;
 var currentSongFromAlbum = null;
 
@@ -155,11 +150,12 @@ $(document).ready(function() {
 	setCurrentAlbum(albumArray[albumIndex]);
 	});
 
-	
 
 	var clickHandler = function(event) {
 		var $songItemNumber = $(this).find('.song-item-number');
+		console.log($songItemNumber);
 		var $songNumber = $songItemNumber.data('song-number');
+		console.log($songNumber);
 		if (currentlyPlayingSongNumber !== null) {
 			// Revert to song number for currently playing song because user started playing new song
 			var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
@@ -168,15 +164,16 @@ $(document).ready(function() {
 		if (currentlyPlayingSongNumber !== $songNumber) {
 			// Switch from Play -> Pause button to indicate new song is playing
 			$songItemNumber.html(pauseButtonTemplate);
-			currentlyPlayingSongNumber = $songNumber;
+			setSong($songNumber);
 			updatePlayerBarSong();
-		} else if (currentlyPlayingSongNumber === $songNumber) {
+		} else {
 			// Switch from Pause -> Play button to pause currently playing song
 			$songItemNumber.html(playButtonTemplate);
 			$('.main-controls .play-pause').html(playerBarPlayButton);
 			currentlyPlayingSongNumber = null;
 			currentSongFromAlbum = null;
 		};
+
 
 	};
 
@@ -197,16 +194,18 @@ $(document).ready(function() {
 	};
 
 	var $songListContainer = $('.album-view-song-list');
+	$songListContainer.on('click', ".album-view-song-item", clickHandler);
 	$songListContainer.on("mouseenter", ".album-view-song-item", onHover);
 	$songListContainer.on("mouseleave", ".album-view-song-item", offHover);
-	$songListContainer.on('click', ".album-view-song-item", clickHandler);
-
+	
 	$previousButton.click(previousSong);
 	$nextButton.click(nextSong);
 });
 
 
 
-
+//clickHandler fails to fire on third sequential click of play button in song row
+//songCell assignment thing
+//squish together previous/next if time
 
 
