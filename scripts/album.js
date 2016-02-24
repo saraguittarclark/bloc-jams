@@ -39,33 +39,51 @@ var setCurrentAlbum = function(album) {
 };
 
 var updatePlayerBarSong = function() {
-	$('.artist-name').text(currentAlbum.artist);
-	$('.song-name').text(currentSongFromAlbum.name);
-	$('.artist-song-mobile').text(currentSongFromAlbum.name + " - " + currentAlbum.artist);
-	$('.play-pause').html(playerBarPauseButton);
+	var currentSong = currentAlbum.songs[currentlyPlayingSongNumber - 1];
+	//removed - 1 from currentlyPlayingSongNumber - doesn't change the console.log in the next/previous songs()
+	//when currentSong is undefined w/o name
+	if (currentSong !== undefined) {
+		$('.artist-name').text(currentAlbum.artist);
+		$('.song-name').text(currentSong.name);
+		$('.artist-song-mobile').text(currentSong.name + " - " + currentAlbum.artist);
+		$('.play-pause').html(playerBarPauseButton);
+	} else {
+		console.log("currentSong is undefined");
+	}
 };
+
 
 var trackIndex = function(album, song) {
 	return album.songs.indexOf(song);
 }
 
-var nextSong = function(){
-	//find index current song
-	// var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
+//next starts at beginning of album, not NEXT song, then on repeat starts at [1] vs. [0]
+//if choose a song manually the next goes back to the next song it was supposed to be/not updating
+//check the array position BEFORE rest of code?
+
+var nextSong = function() {
+	//find last current song
+    // var getLastSongNumber = function(index) {
+    //     return index == 0 ? currentAlbum.songs.length : index;
+    // };
+    
+    var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
+  	var nextSongIndex = trackIndex(currentAlbum, currentSongFromAlbum) + 1;
+	
+	//define nextsong index
+	var nextSong = currentAlbum.songs[nextSongIndex];
+
+	if (currentSongIndex >= currentAlbum.songs.length) {
+		nextSong = currentAlbum.songs[0];
+	} 
+    
+	//new current song is next song
+	currentSongFromAlbum = nextSong;
 
 	//current song change button back to hover functionality/number 
 	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$currentlyPlayingSongElement.html(currentlyPlayingSongNumber);
-	//define nextsong index
-	var nextSongIndex = trackIndex(currentAlbum, currentSongFromAlbum) + 1;
-	//next song set with index
-	var nextSong = currentAlbum.songs[nextSongIndex];
-	if (nextSong === undefined) {
-		currentSongFromAlbum = album.songs[0];
-	}
-	//new current song is next song
-	currentSongFromAlbum = nextSong;
-	//if next song is undefined/nonexistent, play first song
+
 	//change button play to pause currentSongFromAlbum
 	//find song number
 	currentlyPlayingSongNumber = nextSongIndex + 1; //because index != song number
@@ -73,29 +91,43 @@ var nextSong = function(){
 	var $nextSongIndexCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$nextSongIndexCell.html(pauseButtonTemplate);
 
+	// var lastSongNumber = getLastSongNumber(currentSongIndex);
+	// var $lastSongNumberCell = $('.song-item-number[data-song-number="' + lastSongNumber + '"]');
+	// $lastSongNumberCell.html(lastSongNumber);
+
 	updatePlayerBarSong();
 }
 
 var previousSong = function() {
+	//find index current song and previous
+	var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
+	var previousSongIndex = trackIndex(currentAlbum, currentSongFromAlbum) - 1;
+
+	//current song change button back to hover functionality/number 
 	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$currentlyPlayingSongElement.html(currentlyPlayingSongNumber);
-	var previousSongIndex = trackIndex(currentAlbum, currentSongFromAlbum) - 1;
+
+	if (previousSongIndex < 0) {
+		previousSongIndex = currentAlbum.songs.length - 1;
+	} 
+
 	var previousSong = currentAlbum.songs[previousSongIndex];
-	if (previousSong === undefined) {
-		previousSongIndex = album.songs.length - 1;
-	}
+	//new current song is next song
 	currentSongFromAlbum = previousSong;
-	currentlyPlayingSongNumber = previousSongIndex + 1; //because index != song number
 	
+	//change button play to pause currentSongFromAlbum
+	//find song number
+	currentlyPlayingSongNumber = previousSongIndex + 1; //because index != song number
+
 	var $previousSongNumberCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 	$previousSongNumberCell.html(pauseButtonTemplate);
 
-	updatePlayerBarSong(); 
+	updatePlayerBarSong();
 }
 
 var albumImage = document.getElementsByClassName('album-cover-art')[0];
 var albumArray = [albumPicasso, albumMarconi, albumCalle13];
-var albumIndex = 1; //index of currently displayed album
+var albumIndex = 0; //index of currently displayed album
 
 var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
 
@@ -110,6 +142,7 @@ var currentSongFromAlbum = null;
 
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
+var $playPause = $('.main-controls .play-pause');
 
 $(document).ready(function() {
 	setCurrentAlbum(albumArray[albumIndex]);
@@ -122,8 +155,7 @@ $(document).ready(function() {
 	setCurrentAlbum(albumArray[albumIndex]);
 	});
 
-	$previousButton.click(previousSong);
-	$nextButton.click(nextSong);
+	
 
 	var clickHandler = function(event) {
 		var $songItemNumber = $(this).find('.song-item-number');
@@ -145,8 +177,6 @@ $(document).ready(function() {
 			currentlyPlayingSongNumber = null;
 			currentSongFromAlbum = null;
 		};
-
-		//adding update player to clickhandler
 
 	};
 
@@ -170,6 +200,9 @@ $(document).ready(function() {
 	$songListContainer.on("mouseenter", ".album-view-song-item", onHover);
 	$songListContainer.on("mouseleave", ".album-view-song-item", offHover);
 	$songListContainer.on('click', ".album-view-song-item", clickHandler);
+
+	$previousButton.click(previousSong);
+	$nextButton.click(nextSong);
 });
 
 
