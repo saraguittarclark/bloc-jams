@@ -70,14 +70,14 @@ var nextSong = function() {
   	} 
   
 	//current song change button back to hover functionality/number 
-	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+	var $currentlyPlayingSongElement = getSongNumberCell(currentlyPlayingSongNumber);
 	$currentlyPlayingSongElement.html(currentlyPlayingSongNumber);
 
 	//change button play to pause currentSongFromAlbum
 	//find song number
 	setSong(currentSongIndex + 1); //because index 0 based and songnumber 1 based 
 
-	var $nextSongIndexCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+	var $nextSongIndexCell = getSongNumberCell(currentlyPlayingSongNumber);
 	$nextSongIndexCell.html(pauseButtonTemplate);
 
 	updatePlayerBarSong();
@@ -93,14 +93,14 @@ var previousSong = function() {
 	} 
 
 	//current song change button back to hover functionality/number 
-	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+	var $currentlyPlayingSongElement = getSongNumberCell(currentlyPlayingSongNumber);
 	$currentlyPlayingSongElement.html(currentlyPlayingSongNumber);
 
 	//change button play to pause currentSongFromAlbum
 	//find song number
 		setSong(currentSongIndex + 1);
 
-	var $previousSongNumberCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+	var $previousSongNumberCell = getSongNumberCell(currentlyPlayingSongNumber);
 	$previousSongNumberCell.html(pauseButtonTemplate);
 
 	updatePlayerBarSong();
@@ -115,7 +115,7 @@ var setSong = function(songNumber) {
 }
 
 var getSongNumberCell = function(number) {
-	var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+	return $('.song-item-number[data-song-number="' + number + '"]');
 }
 
 var albumImage = document.getElementsByClassName('album-cover-art')[0];
@@ -158,7 +158,7 @@ $(document).ready(function() {
 		console.log($songNumber);
 		if (currentlyPlayingSongNumber !== null) {
 			// Revert to song number for currently playing song because user started playing new song
-			var $currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+			var $currentlyPlayingSongElement = getSongNumberCell(currentlyPlayingSongNumber);
 			$currentlyPlayingSongElement.html(currentlyPlayingSongNumber);
 		}
 		if (currentlyPlayingSongNumber !== $songNumber) {
