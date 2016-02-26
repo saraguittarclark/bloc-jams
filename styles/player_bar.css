@@ -106,7 +106,7 @@
 
 .seek-bar .fill {
 	background: white;
-	width: 36%;
+	width: 0;
 	height: 0.25rem;
 	border-radius: 2px;
 }
@@ -116,7 +116,7 @@
 	height: 0.5rem;
 	width: 0.5rem;
 	background: white;
-	left: 36%;
+	left: 0;
 	top: 50%;
 	margin-left: -0.25rem;
 	margin-top: -0.25rem;
@@ -128,6 +128,14 @@
 					height 100ms ease-in-out,
 					margin-top 100ms ease-in-out,
 					margin-left 100ms ease-in-out;
+}
+
+.player-bar .volume .seek-bar .fill {
+	width: 80%;
+}
+
+.player-bar .volume .seek-bar .thumb {
+	left: 80%;
 }
 
 .seek-bar:hover .thumb {

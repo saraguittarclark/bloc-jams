@@ -61,7 +61,7 @@ var setupSeekBars = function() {
 
 	$seekBars.click(function(event){
 		var offsetX = event.pageX - $(this).offset().left;
-		var barWidth = $(this).width;
+		var barWidth = $(this).width();
 		var seekBarFillRatio = offsetX / barWidth;
 		if ($(this).parent().attr('class') == 'seek-control') {
 			seek(seekBarFillRatio * currentSoundFile.getDuration());
@@ -169,6 +169,11 @@ var setSong = function(songNumber) {
 		formats: ['mp3'],
 		preload: true
 	});
+
+	currentSoundFile.bind("ended", function () {
+		nextSong();
+	});
+
 	setVolume(currentVolume);
 };
 
@@ -208,15 +213,6 @@ var getSongNumberCell = function(number) {
 	return $('.song-item-number[data-song-number="' + number + '"]');
 };
 
-var filterTimeCode = function(timeInSeconds) {
-	var seconds = parseInt(timeInSeconds);
-	// seconds.toFixed(3);
-	var minutes = Math.floor(seconds / 60);
-	// var minutes = Math.floor(seconds) / 60;
-	var filteredTime = minutes + ':' + seconds;
-	return filteredTime;
-};
-
 var setCurrentTimeInPlayerBar = function(currentTime) {
 	currentTime = currentSoundFile.getTime().toFixed(0);
 	var minutes = 0;
@@ -246,7 +242,6 @@ var setCurrentTimeInPlayerBar = function(currentTime) {
 	// }
 	// $('.total-time').html(minutes + ":" + seconds)
 };
-
 
 //VARIABLES
 
@@ -342,12 +337,6 @@ $(document).ready(function() {
 		}
 	};
 
-	var songEnded = function() {
-		if (currentSoundFile.isEnded()) {
-			nextSong();
-		}
-	};
-
 	var $songListContainer = $('.album-view-song-list');
 	$songListContainer.on('click', ".album-view-song-item", clickHandler);
 	$songListContainer.on("mouseenter", ".album-view-song-item", onHover);
@@ -360,12 +349,7 @@ $(document).ready(function() {
 
 
 
-//DOESN'T PLAY THROUGH WHOLE ALBUM! STOPS AFTER PLAYED SONG
-//should play next song
-//if song is ended, revert pause to number
-//squish together previous/next if time
-//sound.fadeIn([duration],[callback]) or fadeOut
+
 //sound.mute or unmute - add click event listener to volume character/create button
-//is an error on 179 - though works! volume : double value is non-finite
-//playback seek bar begins in middle vs at beginning
+
 	
